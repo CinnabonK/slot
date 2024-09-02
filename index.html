@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>スロットマシン</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+        }
+        .slot-machine {
+            margin: 50px auto;
+            padding: 20px;
+            border: 5px solid #000;
+            background-color: #ccc;
+            width: 300px;
+            height: 400px;
+            position: relative;
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+        .slots {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+        }
+        .slot {
+            width: 60px;
+            height: 60px;
+            background-color: #fff;
+            border: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+        .symbols {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            height: 300%; /* 増加させた高さで回転をスムーズに見せる */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: transform 1s linear;
+        }
+        .symbols > div {
+            height: 60px; /* スロットの高さと一致させる */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        .balance {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="slot-machine">
+    <div class="balance">所持金: <span id="balance">10000</span>c</div>
+    <div class="slots">
+        <div class="slot" id="slot1">
+            <div class="symbols">
+                <div>7</div>
+                <div>サクランボ</div>
+                <div>BAR</div>
+                <div>BARBAR</div>
+                <div>BARBARBAR</div>
+            </div>
+        </div>
+        <div class="slot" id="slot2">
+            <div class="symbols">
+                <div>7</div>
+                <div>サクランボ</div>
+                <div>BAR</div>
+                <div>BARBAR</div>
+                <div>BARBARBAR</div>
+            </div>
+        </div>
+        <div class="slot" id="slot3">
+            <div class="symbols">
+                <div>7</div>
+                <div>サクランボ</div>
+                <div>BAR</div>
+                <div>BARBAR</div>
+                <div>BARBARBAR</div>
+            </div>
+        </div>
+    </div>
+    <div class="controls">
+        <button id="spinButton">回転</button>
+        <button id="stopButton1" disabled>ストップ 1</button>
+        <button id="stopButton2" disabled>ストップ 2</button>
+        <button id="stopButton3" disabled>ストップ 3</button>
+    </div>
+</div>
+
+<script>
+    let balance = 10000;
+    const symbols = ["7", "サクランボ", "BAR", "BARBAR", "BARBARBAR"];
+    let isSpinning = [false, false, false];
+    let currentPosition = [0, 0, 0];
+    let spinning = [false, false, false];
+
+    function spin(slot) {
+        const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
+        const randomOffset = Math.floor(Math.random() * 1000) + 1; // ランダムな位置
+        symbolsDiv.style.transform = `translateY(-${randomOffset * 60}px)`;
+        currentPosition[slot - 1] = randomOffset;
+        spinning[slot - 1] = true;
+    }
+
+    function stop(slot) {
+        const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
+        symbolsDiv.style.transition = 'none'; // 一時的にトランジションを無効にする
+        symbolsDiv.style.transform = `translateY(-${currentPosition[slot - 1] * 60}px)`;
+        spinning[slot - 1] = false;
+        setTimeout(() => symbolsDiv.style.transition = 'transform 1s linear', 100); // トランジションを再度有効にする
+
+        if (!spinning.includes(true)) {
+            checkResults();
+        }
+    }
+
+    function checkResults() {
+        const slot1 = document.querySelector("#slot1 .symbols > div").innerText;
+        const slot2 = document.querySelector("#slot2 .symbols > div").innerText;
+        const slot3 = document.querySelector("#slot3 .symbols > div").innerText;
+        // 結果判定ロジックをここに追加
+    }
+
+    document.getElementById("spinButton").addEventListener("click", function() {
+        if (balance >= 200 && !spinning.includes(true)) {
+            balance -= 200;
+            document.getElementById("balance").innerText = balance;
+            
+            // 各スロットを回転させる
+            spin(1);
+            spin(2);
+            spin(3);
+
+            // ストップボタンを有効にする
+            document.getElementById("stopButton1").disabled = false;
+            document.getElementById("stopButton2").disabled = false;
+            document.getElementById("stopButton3").disabled = false;
+        } else if (spinning.includes(true)) {
+            alert("すべてのスロットが停止するまでお待ちください！");
+        } else {
+            alert("所持金が足りません！");
+        }
+    });
+
+    document.getElementById("stopButton1").addEventListener("click", function() {
+        stop(1);
+        document.getElementById("stopButton1").disabled = true;
+    });
+
+    document.getElementById("stopButton2").addEventListener("click", function() {
+        stop(2);
+        document.getElementById("stopButton2").disabled = true;
+    });
+
+    document.getElementById("stopButton3").addEventListener("click", function() {
+        stop(3);
+        document.getElementById("stopButton3").disabled = true;
+    });
+</script>
+
+</body>
+</html>
