@@ -42,16 +42,13 @@
             border-radius: 10px;
         }
         .symbols {
-            position: absolute;
-            top: 0;
-            width: 100%;
-            height: 300%; /* 3倍の高さで回転をスムーズに */
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* 縦のスクロールを隠す */
+            height: 100%;
+            transition: transform 1s linear;
         }
         .symbols > div {
-            height: 60px; /* 各シンボルの高さをスロットと合わせる */
+            height: 60px; /* 各シンボルの高さ */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -118,29 +115,27 @@
     let balance = 10000;
     const symbols = ["7", "サクランボ", "BAR", "BARBAR", "BARBARBAR"];
     let isSpinning = [false, false, false];
-    let currentPosition = [0, 0, 0];
-    let spinning = [false, false, false];
+    let rotations = [0, 0, 0];
 
     function spin(slot) {
         const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
-        const symbolHeight = 60; // シンボルの高さ
-        const totalSymbols = symbols.length; // シンボルの数
-        const randomOffset = Math.floor(Math.random() * totalSymbols); // ランダムな位置
-        symbolsDiv.style.transition = 'none'; // 一時的にトランジションを無効にする
-        symbolsDiv.style.transform = `translateY(-${randomOffset * symbolHeight}px)`;
-        currentPosition[slot - 1] = randomOffset;
-        spinning[slot - 1] = true;
-        setTimeout(() => symbolsDiv.style.transition = 'transform 1s linear', 100); // トランジションを再度有効にする
+        const totalSymbols = symbols.length;
+        const randomOffset = Math.floor(Math.random() * totalSymbols); // ランダムなオフセット
+        
+        // 各シンボルの高さを設定（60px）
+        symbolsDiv.style.transform = `translateY(-${randomOffset * 60}px)`;
+        isSpinning[slot - 1] = true;
+        rotations[slot - 1] = randomOffset;
     }
 
     function stop(slot) {
         const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
         symbolsDiv.style.transition = 'none'; // 一時的にトランジションを無効にする
-        symbolsDiv.style.transform = `translateY(-${currentPosition[slot - 1] * 60}px)`;
-        spinning[slot - 1] = false;
+        symbolsDiv.style.transform = `translateY(-${rotations[slot - 1] * 60}px)`;
+        isSpinning[slot - 1] = false;
         setTimeout(() => symbolsDiv.style.transition = 'transform 1s linear', 100); // トランジションを再度有効にする
 
-        if (!spinning.includes(true)) {
+        if (!isSpinning.includes(true)) {
             checkResults();
         }
     }
@@ -153,7 +148,7 @@
     }
 
     document.getElementById("spinButton").addEventListener("click", function() {
-        if (balance >= 200 && !spinning.includes(true)) {
+        if (balance >= 200 && !isSpinning.includes(true)) {
             balance -= 200;
             document.getElementById("balance").innerText = balance;
             
@@ -166,7 +161,7 @@
             document.getElementById("stopButton1").disabled = false;
             document.getElementById("stopButton2").disabled = false;
             document.getElementById("stopButton3").disabled = false;
-        } else if (spinning.includes(true)) {
+        } else if (isSpinning.includes(true)) {
             alert("すべてのスロットが停止するまでお待ちください！");
         } else {
             alert("所持金が足りません！");
