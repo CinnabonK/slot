@@ -6,47 +6,48 @@ body {
 }
 
 .payout-table {
-    margin: 50px auto; /* 中央に配置 */
-    width: 60%; /* テーブルの幅を大きくする */
+    margin: 50px auto;
+    width: 50%;
 }
 
 .payout-table table {
     margin: 0 auto;
     border-collapse: collapse;
-    width: 100%; /* テーブルの幅を100%に */
+    width: 100%;
 }
 
 .payout-table th, .payout-table td {
-    border: 2px solid #000; /* 境界線を太くする */
-    padding: 15px; /* セル内の余白を増やす */
-    font-size: 24px; /* フォントサイズを大きく */
+    border: 2px solid #000;
+    padding: 15px;
+    font-size: 24px;
+    text-align: center;
 }
 
 .payout-table th {
-    background-color: #f2f2f2; /* ヘッダーの背景色を設定 */
+    background-color: #f2f2f2;
 }
 
 .slot-machine {
     display: flex;
     justify-content: center;
-    margin-top: 50px; /* 下に移動 */
+    margin-top: 50px;
 }
 
 .reel {
-    width: 70px; /* リールを大きく */
-    height: 70px; /* リールを大きく */
-    font-size: 36px; /* フォントサイズを大きく */
+    width: 70px;
+    height: 70px;
+    font-size: 36px;
     border: 2px solid #000;
     margin: 0 15px;
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: spin 0.5s linear infinite;
+    animation: spin 1.5s linear infinite; /* 回転速度を遅く */
 }
 
 @keyframes spin {
     0% { transform: translateY(0); }
-    100% { transform: translateY(-70px); } /* リールサイズに合わせて調整 */
+    100% { transform: translateY(-70px); }
 }
 
 .controls {
