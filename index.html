@@ -3,200 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>スロットマシン</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-        }
-        .slot-machine {
-            margin: 50px auto;
-            padding: 20px;
-            border: 5px solid #000;
-            background-color: #ccc;
-            width: 300px;
-            height: 400px;
-            position: relative;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-        .slots {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-        }
-        .slot {
-            width: 60px;
-            height: 60px;
-            background-color: #fff;
-            border: 2px solid #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            position: relative;
-            overflow: hidden;
-            border-radius: 10px;
-        }
-        .symbols {
-            display: flex;
-            flex-direction: column;
-            height: 300%; /* スロットの高さの3倍 */
-            will-change: transform;
-        }
-        .symbols > div {
-            height: 60px; /* 各シンボルの高さ */
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .spinning {
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            from { transform: translateY(0); }
-            to { transform: translateY(-200%); } /* -200%でスクロールが2回分になります */
-        }
-        .controls {
-            margin-top: 20px;
-        }
-        .balance {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 18px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-    </style>
+    <title>スロットゲーム</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
-<div class="slot-machine">
-    <div class="balance">所持金: <span id="balance">10000</span>c</div>
-    <div class="slots">
-        <div class="slot" id="slot1">
-            <div class="symbols">
-                <div>7</div>
-                <div>サクランボ</div>
-                <div>BAR</div>
-                <div>BARBAR</div>
-                <div>BARBARBAR</div>
-                <div>7</div>
-                <div>サクランボ</div>
-                <div>BAR</div>
-                <div>BARBAR</div>
-                <div>BARBARBAR</div>
-            </div>
-        </div>
-        <div class="slot" id="slot2">
-            <div class="symbols">
-                <div>7</div>
-                <div>サクランボ</div>
-                <div>BAR</div>
-                <div>BARBAR</div>
-                <div>BARBARBAR</div>
-                <div>7</div>
-                <div>サクランボ</div>
-                <div>BAR</div>
-                <div>BARBAR</div>
-                <div>BARBARBAR</div>
-            </div>
-        </div>
-        <div class="slot" id="slot3">
-            <div class="symbols">
-                <div>7</div>
-                <div>サクランボ</div>
-                <div>BAR</div>
-                <div>BARBAR</div>
-                <div>BARBARBAR</div>
-                <div>7</div>
-                <div>サクランボ</div>
-                <div>BAR</div>
-                <div>BARBAR</div>
-                <div>BARBARBAR</div>
-            </div>
-        </div>
+    <div class="slot-machine">
+        <div class="reel" id="reel1">A</div>
+        <div class="reel" id="reel2">A</div>
+        <div class="reel" id="reel3">A</div>
     </div>
     <div class="controls">
-        <button id="spinButton">回転</button>
-        <button id="stopButton1" disabled>ストップ 1</button>
-        <button id="stopButton2" disabled>ストップ 2</button>
-        <button id="stopButton3" disabled>ストップ 3</button>
+        <label for="bet">ベット額: </label>
+        <input type="number" id="bet" min="1" max="100" value="10">
+        <button id="start">スタート</button>
+        <button id="stop1" disabled>ストップ 1</button>
+        <button id="stop2" disabled>ストップ 2</button>
+        <button id="stop3" disabled>ストップ 3</button>
+        <button id="reroll" disabled>再ロール</button>
     </div>
-</div>
-
-<script>
-    let balance = 10000;
-    const symbols = ["7", "サクランボ", "BAR", "BARBAR", "BARBARBAR"];
-    let isSpinning = [false, false, false];
-    let spinningIntervals = [];
-
-    function startSpin(slot) {
-        const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
-        symbolsDiv.classList.add('spinning');
-        isSpinning[slot - 1] = true;
-    }
-
-    function stopSpin(slot) {
-        const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
-        symbolsDiv.classList.remove('spinning');
-        isSpinning[slot - 1] = false;
-        if (!isSpinning.includes(true)) {
-            checkResults();
-        }
-    }
-
-    function checkResults() {
-        const slot1 = document.querySelector("#slot1 .symbols > div").innerText;
-        const slot2 = document.querySelector("#slot2 .symbols > div").innerText;
-        const slot3 = document.querySelector("#slot3 .symbols > div").innerText;
-        // 結果判定ロジックをここに追加
-    }
-
-    document.getElementById("spinButton").addEventListener("click", function() {
-        if (balance >= 200 && !isSpinning.includes(true)) {
-            balance -= 200;
-            document.getElementById("balance").innerText = balance;
-            
-            // 各スロットを回転させる
-            startSpin(1);
-            startSpin(2);
-            startSpin(3);
-
-            // ストップボタンを有効にする
-            document.getElementById("stopButton1").disabled = false;
-            document.getElementById("stopButton2").disabled = false;
-            document.getElementById("stopButton3").disabled = false;
-        } else if (isSpinning.includes(true)) {
-            alert("すべてのスロットが停止するまでお待ちください！");
-        } else {
-            alert("所持金が足りません！");
-        }
-    });
-
-    document.getElementById("stopButton1").addEventListener("click", function() {
-        stopSpin(1);
-        document.getElementById("stopButton1").disabled = true;
-    });
-
-    document.getElementById("stopButton2").addEventListener("click", function() {
-        stopSpin(2);
-        document.getElementById("stopButton2").disabled = true;
-    });
-
-    document.getElementById("stopButton3").addEventListener("click", function() {
-        stopSpin(3);
-        document.getElementById("stopButton3").disabled = true;
-    });
-</script>
-
+    <div class="status">
+        <p>残りのお金: <span id="money">10000</span></p>
+        <p id="message"></p>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
