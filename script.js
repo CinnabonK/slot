@@ -19,7 +19,7 @@ const controlsContainer = document.querySelector('.controls');
 
 const symbols = ['A', 'B', 'C', 'D'];
 let intervals = [null, null, null];
-let money = 10000;
+let money = 750;
 let currentBet = 0;
 
 const payoutMultipliers = {
@@ -45,7 +45,7 @@ function startReel(reelIndex) {
     intervals[reelIndex] = setInterval(() => {
         const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
         reels[reelIndex].textContent = randomSymbol;
-    }, 250);  // リールの回転速度を遅く
+    }, 150);  // リールの回転速度を遅く
 }
 
 function stopReel(reelIndex) {
