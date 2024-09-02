@@ -45,14 +45,13 @@
             position: absolute;
             top: 0;
             width: 100%;
-            height: 300%; /* 増加させた高さで回転をスムーズに見せる */
+            height: 300%; /* 3倍の高さで回転をスムーズに */
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            transition: transform 1s linear;
+            overflow: hidden; /* 縦のスクロールを隠す */
         }
         .symbols > div {
-            height: 60px; /* スロットの高さと一致させる */
+            height: 60px; /* 各シンボルの高さをスロットと合わせる */
             display: flex;
             align-items: center;
             justify-content: center;
@@ -124,10 +123,14 @@
 
     function spin(slot) {
         const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
-        const randomOffset = Math.floor(Math.random() * 1000) + 1; // ランダムな位置
-        symbolsDiv.style.transform = `translateY(-${randomOffset * 60}px)`;
+        const symbolHeight = 60; // シンボルの高さ
+        const totalSymbols = symbols.length; // シンボルの数
+        const randomOffset = Math.floor(Math.random() * totalSymbols); // ランダムな位置
+        symbolsDiv.style.transition = 'none'; // 一時的にトランジションを無効にする
+        symbolsDiv.style.transform = `translateY(-${randomOffset * symbolHeight}px)`;
         currentPosition[slot - 1] = randomOffset;
         spinning[slot - 1] = true;
+        setTimeout(() => symbolsDiv.style.transition = 'transform 1s linear', 100); // トランジションを再度有効にする
     }
 
     function stop(slot) {
