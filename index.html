@@ -45,7 +45,7 @@
             display: flex;
             flex-direction: column;
             height: 300%; /* スロットの高さの3倍 */
-            transition: transform 1s linear;
+            will-change: transform;
         }
         .symbols > div {
             height: 60px; /* 各シンボルの高さ */
@@ -54,6 +54,13 @@
             justify-content: center;
             font-size: 24px;
             font-weight: bold;
+        }
+        .spinning {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: translateY(0); }
+            to { transform: translateY(-200%); } /* -200%でスクロールが2回分になります */
         }
         .controls {
             margin-top: 20px;
@@ -130,42 +137,17 @@
     let balance = 10000;
     const symbols = ["7", "サクランボ", "BAR", "BARBAR", "BARBARBAR"];
     let isSpinning = [false, false, false];
-    let intervals = [];
+    let spinningIntervals = [];
 
-    function spin(slot) {
+    function startSpin(slot) {
         const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
-        const totalSymbols = symbols.length;
-        const symbolHeight = 60;
-        const visibleSymbols = 5;
-        const totalHeight = symbolHeight * totalSymbols;
-        const randomOffset = Math.floor(Math.random() * totalSymbols); // ランダムなオフセット
-        
-        // アニメーションをリセットして再設定
-        symbolsDiv.style.transition = 'none'; 
-        symbolsDiv.style.transform = `translateY(0)`;
-        setTimeout(() => {
-            symbolsDiv.style.transition = `transform 1s linear`;
-            symbolsDiv.style.transform = `translateY(-${randomOffset * symbolHeight}px)`;
-        }, 50); // 軽微な遅延を追加してアニメーションを開始
-
-        // 回転中であることをマークする
+        symbolsDiv.classList.add('spinning');
         isSpinning[slot - 1] = true;
-        intervals[slot - 1] = setTimeout(() => {
-            isSpinning[slot - 1] = false;
-            checkResults();
-        }, 1000); // アニメーションの長さに合わせて設定
     }
 
-    function stop(slot) {
-        clearTimeout(intervals[slot - 1]);
+    function stopSpin(slot) {
         const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
-        symbolsDiv.style.transition = 'none'; // トランジションを一時的に無効にする
-        const symbolHeight = 60;
-        const totalSymbols = symbols.length;
-        const currentPosition = Math.round(parseInt(symbolsDiv.style.transform.match(/-([0-9]+)px/)[1]) / symbolHeight);
-        symbolsDiv.style.transform = `translateY(-${currentPosition * symbolHeight}px)`;
-        symbolsDiv.style.transition = 'transform 1s linear'; // トランジションを再設定
-
+        symbolsDiv.classList.remove('spinning');
         isSpinning[slot - 1] = false;
         if (!isSpinning.includes(true)) {
             checkResults();
@@ -185,9 +167,9 @@
             document.getElementById("balance").innerText = balance;
             
             // 各スロットを回転させる
-            spin(1);
-            spin(2);
-            spin(3);
+            startSpin(1);
+            startSpin(2);
+            startSpin(3);
 
             // ストップボタンを有効にする
             document.getElementById("stopButton1").disabled = false;
@@ -201,17 +183,17 @@
     });
 
     document.getElementById("stopButton1").addEventListener("click", function() {
-        stop(1);
+        stopSpin(1);
         document.getElementById("stopButton1").disabled = true;
     });
 
     document.getElementById("stopButton2").addEventListener("click", function() {
-        stop(2);
+        stopSpin(2);
         document.getElementById("stopButton2").disabled = true;
     });
 
     document.getElementById("stopButton3").addEventListener("click", function() {
-        stop(3);
+        stopSpin(3);
         document.getElementById("stopButton3").disabled = true;
     });
 </script>
