@@ -1,4 +1,3 @@
-// script.js
 const reels = [
     document.getElementById('reel1'),
     document.getElementById('reel2'),
@@ -18,9 +17,9 @@ const moneyDisplay = document.getElementById('money');
 const messageDisplay = document.getElementById('message');
 const controlsContainer = document.querySelector('.controls');
 
-const symbols = ['A', 'B', 'C', 'D']; // EとFを削除
+const symbols = ['A', 'B', 'C', 'D'];
 let intervals = [null, null, null];
-let money = 100;
+let money = 10000;
 let currentBet = 0;
 
 const payoutMultipliers = {
@@ -30,7 +29,6 @@ const payoutMultipliers = {
     'D': 1
 };
 
-// リールの初期表示を設定（スタート前に動かないように）
 function resetReels() {
     for (let i = 0; i < reels.length; i++) {
         reels[i].textContent = symbols[0];
@@ -38,7 +36,6 @@ function resetReels() {
     }
 }
 
-// リールを回転させる関数
 function startReel(reelIndex) {
     intervals[reelIndex] = setInterval(() => {
         const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
@@ -46,15 +43,13 @@ function startReel(reelIndex) {
     }, 100);
 }
 
-// リールを停止させる関数
 function stopReel(reelIndex) {
     clearInterval(intervals[reelIndex]);
-    intervals[reelIndex] = null; // リールの回転を停止
-    reels[reelIndex].style.animation = 'none'; // スムーズに止める
+    intervals[reelIndex] = null;
+    reels[reelIndex].style.animation = 'none';
     checkAllReelsStopped();
 }
 
-// すべてのリールを回転させる関数
 function startAllReels() {
     for (let i = 0; i < reels.length; i++) {
         reels[i].style.animation = 'spin 0.1s linear infinite';
@@ -62,17 +57,15 @@ function startAllReels() {
     }
 }
 
-// すべてのリールが停止したかチェックする関数
 function checkAllReelsStopped() {
-    if (intervals.every(interval => interval === null)) { // 全てのリールが停止したら
+    if (intervals.every(interval => interval === null)) {
         enableStopButtons(false);
         checkWin();
         startButton.disabled = false;
-        rerollButton.disabled = false; // 再ロールボタンを有効化
+        rerollButton.disabled = false;
     }
 }
 
-// 勝利をチェックする関数
 function checkWin() {
     const result = reels.map(reel => reel.textContent);
     if (result[0] === result[1] && result[1] === result[2]) {
@@ -85,11 +78,11 @@ function checkWin() {
         messageDisplay.textContent = "残念、もう一度挑戦しましょう。";
     }
     moneyDisplay.textContent = money;
+    betInput.max = money;  // ベット額の最大値を更新
 }
 
-// 再ロールを処理する関数
 function handleReroll() {
-    if (money >= currentBet) { // 再ロールには現在のベット額を消費
+    if (money >= currentBet) {
         money -= currentBet;
         moneyDisplay.textContent = money;
         messageDisplay.textContent = "";
@@ -101,12 +94,10 @@ function handleReroll() {
     }
 }
 
-// ストップボタンを有効/無効にする関数
 function enableStopButtons(enabled) {
     stopButtons.forEach(button => button.disabled = !enabled);
 }
 
-// スタートボタンを処理する関数
 function handleStart() {
     currentBet = parseInt(betInput.value);
     if (money >= currentBet) {
@@ -118,27 +109,23 @@ function handleStart() {
         startButton.disabled = true;
         rerollButton.disabled = true;
 
-        // スタートボタンを消し、ベット欄を中央に寄せる
         controlsContainer.classList.add('hidden-start');
     } else {
         messageDisplay.textContent = "お金が足りません。";
     }
 }
 
-// 初期設定：リールをリセットしてストップボタンを無効化
 resetReels();
 enableStopButtons(false);
 rerollButton.disabled = true;
+betInput.max = money; // 初期ベットの最大値を設定
 
-// スタートボタンのイベントリスナー
 startButton.addEventListener('click', handleStart);
 
-// 各リールのストップボタンのイベントリスナー
 for (let i = 0; i < reels.length; i++) {
     stopButtons[i].addEventListener('click', () => {
         stopReel(i);
     });
 }
 
-// 再ロールボタンのイベントリスナー
 rerollButton.addEventListener('click', handleReroll);
