@@ -23,6 +23,8 @@ let money = 10000;
 let currentBet = 0;
 
 const payoutMultipliers = {
+    'AAA': 4,
+    'ABC': 5,
     'A': 5,
     'B': 3,
     'C': 2,
@@ -67,18 +69,26 @@ function checkAllReelsStopped() {
 }
 
 function checkWin() {
-    const result = reels.map(reel => reel.textContent);
-    if (result[0] === result[1] && result[1] === result[2]) {
-        const symbol = result[0];
-        const multiplier = payoutMultipliers[symbol];
-        const winnings = currentBet * multiplier;
+    const result = reels.map(reel => reel.textContent).sort();
+    let winnings = 0;
+
+    if (result[0] === 'A' && result[1] === 'A' && result[2] === 'A') {
+        winnings = currentBet * payoutMultipliers['AAA'];
         messageDisplay.textContent = `おめでとう！ あなたは ${winnings} コインを獲得しました！`;
-        money += winnings;
+    } else if (result.includes('A') && result.includes('B') && result.includes('C')) {
+        winnings = currentBet * payoutMultipliers['ABC'];
+        messageDisplay.textContent = `おめでとう！ あなたは ${winnings} コインを獲得しました！`;
+    } else if (result[0] === result[1] && result[1] === result[2]) {
+        const symbol = result[0];
+        winnings = currentBet * payoutMultipliers[symbol];
+        messageDisplay.textContent = `おめでとう！ あなたは ${winnings} コインを獲得しました！`;
     } else {
         messageDisplay.textContent = "残念、もう一度挑戦しましょう。";
     }
+
+    money += winnings;
     moneyDisplay.textContent = money;
-    betInput.max = money;  // ベット額の最大値を更新
+    betInput.max = money;
 }
 
 function handleReroll() {
@@ -118,7 +128,7 @@ function handleStart() {
 resetReels();
 enableStopButtons(false);
 rerollButton.disabled = true;
-betInput.max = money; // 初期ベットの最大値を設定
+betInput.max = money;
 
 startButton.addEventListener('click', handleStart);
 
