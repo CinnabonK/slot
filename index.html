@@ -44,7 +44,7 @@
         .symbols {
             display: flex;
             flex-direction: column;
-            height: 100%;
+            height: 300%; /* スロットの高さの3倍 */
             transition: transform 1s linear;
         }
         .symbols > div {
@@ -82,6 +82,11 @@
                 <div>BAR</div>
                 <div>BARBAR</div>
                 <div>BARBARBAR</div>
+                <div>7</div>
+                <div>サクランボ</div>
+                <div>BAR</div>
+                <div>BARBAR</div>
+                <div>BARBARBAR</div>
             </div>
         </div>
         <div class="slot" id="slot2">
@@ -91,10 +96,20 @@
                 <div>BAR</div>
                 <div>BARBAR</div>
                 <div>BARBARBAR</div>
+                <div>7</div>
+                <div>サクランボ</div>
+                <div>BAR</div>
+                <div>BARBAR</div>
+                <div>BARBARBAR</div>
             </div>
         </div>
         <div class="slot" id="slot3">
             <div class="symbols">
+                <div>7</div>
+                <div>サクランボ</div>
+                <div>BAR</div>
+                <div>BARBAR</div>
+                <div>BARBARBAR</div>
                 <div>7</div>
                 <div>サクランボ</div>
                 <div>BAR</div>
@@ -115,26 +130,43 @@
     let balance = 10000;
     const symbols = ["7", "サクランボ", "BAR", "BARBAR", "BARBARBAR"];
     let isSpinning = [false, false, false];
-    let rotations = [0, 0, 0];
+    let intervals = [];
 
     function spin(slot) {
         const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
         const totalSymbols = symbols.length;
+        const symbolHeight = 60;
+        const visibleSymbols = 5;
+        const totalHeight = symbolHeight * totalSymbols;
         const randomOffset = Math.floor(Math.random() * totalSymbols); // ランダムなオフセット
         
-        // 各シンボルの高さを設定（60px）
-        symbolsDiv.style.transform = `translateY(-${randomOffset * 60}px)`;
+        // アニメーションをリセットして再設定
+        symbolsDiv.style.transition = 'none'; 
+        symbolsDiv.style.transform = `translateY(0)`;
+        setTimeout(() => {
+            symbolsDiv.style.transition = `transform 1s linear`;
+            symbolsDiv.style.transform = `translateY(-${randomOffset * symbolHeight}px)`;
+        }, 50); // 軽微な遅延を追加してアニメーションを開始
+
+        // 回転中であることをマークする
         isSpinning[slot - 1] = true;
-        rotations[slot - 1] = randomOffset;
+        intervals[slot - 1] = setTimeout(() => {
+            isSpinning[slot - 1] = false;
+            checkResults();
+        }, 1000); // アニメーションの長さに合わせて設定
     }
 
     function stop(slot) {
+        clearTimeout(intervals[slot - 1]);
         const symbolsDiv = document.querySelector(`#slot${slot} .symbols`);
-        symbolsDiv.style.transition = 'none'; // 一時的にトランジションを無効にする
-        symbolsDiv.style.transform = `translateY(-${rotations[slot - 1] * 60}px)`;
-        isSpinning[slot - 1] = false;
-        setTimeout(() => symbolsDiv.style.transition = 'transform 1s linear', 100); // トランジションを再度有効にする
+        symbolsDiv.style.transition = 'none'; // トランジションを一時的に無効にする
+        const symbolHeight = 60;
+        const totalSymbols = symbols.length;
+        const currentPosition = Math.round(parseInt(symbolsDiv.style.transform.match(/-([0-9]+)px/)[1]) / symbolHeight);
+        symbolsDiv.style.transform = `translateY(-${currentPosition * symbolHeight}px)`;
+        symbolsDiv.style.transition = 'transform 1s linear'; // トランジションを再設定
 
+        isSpinning[slot - 1] = false;
         if (!isSpinning.includes(true)) {
             checkResults();
         }
