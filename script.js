@@ -23,12 +23,11 @@ let money = 10000;
 let currentBet = 0;
 
 const payoutMultipliers = {
-    'AAA': 4,
     'ABC': 5,
-    'A': 5,
-    'B': 3,
-    'C': 2,
-    'D': 1
+    'AAA': 4,
+    'BBB': 3,
+    'CCC': 2,
+    'DDD': 1
 };
 
 function resetReels() {
