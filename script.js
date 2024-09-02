@@ -23,12 +23,16 @@ let money = 10000;
 let currentBet = 0;
 
 const payoutMultipliers = {
-    'ABC': 5,
-    'AAA': 4,
-    'BBB': 3,
-    'CCC': 2,
-    'DDD': 1
+    'AAA': 40,
+    'BBB': 30,
+    'CCC': 20,
+    'DDD': 10,
+    'ABC': 50
 };
+
+// 最高記録をローカルストレージから取得
+let highestMoney = localStorage.getItem('highestMoney') || 0;
+document.querySelector('.status').insertAdjacentHTML('beforeend', `<p>最高記録: <span id="highest-money">${highestMoney}</span></p>`);
 
 function resetReels() {
     for (let i = 0; i < reels.length; i++) {
@@ -41,7 +45,7 @@ function startReel(reelIndex) {
     intervals[reelIndex] = setInterval(() => {
         const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
         reels[reelIndex].textContent = randomSymbol;
-    }, 100);
+    }, 250);  // リールの回転速度を遅く
 }
 
 function stopReel(reelIndex) {
@@ -53,7 +57,7 @@ function stopReel(reelIndex) {
 
 function startAllReels() {
     for (let i = 0; i < reels.length; i++) {
-        reels[i].style.animation = 'spin 0.1s linear infinite';
+        reels[i].style.animation = 'spin 1.5s linear infinite';
         startReel(i);
     }
 }
@@ -68,18 +72,22 @@ function checkAllReelsStopped() {
 }
 
 function checkWin() {
-    const result = reels.map(reel => reel.textContent).sort();
+    const result = reels.map(reel => reel.textContent);
     let winnings = 0;
 
     if (result[0] === 'A' && result[1] === 'A' && result[2] === 'A') {
         winnings = currentBet * payoutMultipliers['AAA'];
-        messageDisplay.textContent = `おめでとう！ あなたは ${winnings} コインを獲得しました！`;
+    } else if (result[0] === 'B' && result[1] === 'B' && result[2] === 'B') {
+        winnings = currentBet * payoutMultipliers['BBB'];
+    } else if (result[0] === 'C' && result[1] === 'C' && result[2] === 'C') {
+        winnings = currentBet * payoutMultipliers['CCC'];
+    } else if (result[0] === 'D' && result[1] === 'D' && result[2] === 'D') {
+        winnings = currentBet * payoutMultipliers['DDD'];
     } else if (result.includes('A') && result.includes('B') && result.includes('C')) {
         winnings = currentBet * payoutMultipliers['ABC'];
-        messageDisplay.textContent = `おめでとう！ あなたは ${winnings} コインを獲得しました！`;
-    } else if (result[0] === result[1] && result[1] === result[2]) {
-        const symbol = result[0];
-        winnings = currentBet * payoutMultipliers[symbol];
+    }
+
+    if (winnings > 0) {
         messageDisplay.textContent = `おめでとう！ あなたは ${winnings} コインを獲得しました！`;
     } else {
         messageDisplay.textContent = "残念、もう一度挑戦しましょう。";
@@ -88,6 +96,13 @@ function checkWin() {
     money += winnings;
     moneyDisplay.textContent = money;
     betInput.max = money;
+
+    // 最高記録を更新
+    if (money > highestMoney) {
+        highestMoney = money;
+        localStorage.setItem('highestMoney', highestMoney);
+        document.getElementById('highest-money').textContent = highestMoney;
+    }
 }
 
 function handleReroll() {
