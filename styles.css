@@ -7,7 +7,7 @@ body {
 
 .payout-table {
     margin: 50px auto;
-    width: 50%;
+    width: 25%; /* テーブルの幅を半分に設定 */
 }
 
 .payout-table table {
@@ -42,7 +42,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: spin 0.5s linear infinite; /* 回転速度を遅く */
+    animation: spin 1.5s linear infinite; /* 回転速度を遅く */
 }
 
 @keyframes spin {
