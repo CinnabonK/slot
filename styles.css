@@ -1,15 +1,15 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    margin: 20px; /* 修正: marginを20に変更 */
+    margin: 20px;
     padding: 0;
 }
 
 .payout-table {
     margin: 50px auto;
-    width: 100%; /* 修正: テーブルを画面幅に合わせる */
-    max-width: 600px; /* テーブルの最大幅を設定 */
-    box-sizing: border-box; /* パディングとボーダーを含めてサイズを計算 */
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
 }
 
 .payout-table table {
@@ -33,7 +33,7 @@ body {
     display: flex;
     justify-content: center;
     margin-top: 50px;
-    flex-wrap: wrap; /* 修正: スロットのリールが画面に収まるように折り返しを許可 */
+    flex-wrap: wrap;
 }
 
 .reel {
@@ -47,11 +47,20 @@ body {
     align-items: center;
     overflow: hidden;
     position: relative;
+    transition: transform 0.5s ease-in-out;
 }
 
-.reel span {
-    position: absolute;
+.reel.stopping span {
     animation: spin 1.5s linear infinite;
+}
+
+.reel.spin span {
+    animation: none; /* 回転中はアニメーションを無効化 */
+}
+
+@keyframes spin {
+    0% { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 .controls {
@@ -59,7 +68,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-wrap: wrap; /* 修正: コントロールが画面に収まるように折り返しを許可 */
+    flex-wrap: wrap;
 }
 
 .controls.hidden-start #start {
@@ -72,9 +81,15 @@ body {
 
 button, input {
     font-size: 20px;
-    margin: 10px; /* 修正: マージンを小さくし、スマホでの表示を最適化 */
+    margin: 10px;
     padding: 10px 20px;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+    background-color: #ddd;
+    transform: scale(1.05);
 }
 
 input {
@@ -86,35 +101,53 @@ input {
     font-size: 18px;
 }
 
-/* スマホ向けのメディアクエリ */
 @media (max-width: 600px) {
     .payout-table th, .payout-table td {
-        font-size: 16px; /* スマホではフォントサイズを小さく */
-        padding: 8px; /* パディングを小さく */
+        font-size: 16px;
+        padding: 8px;
     }
 
     .reel {
         width: 60px;
         height: 60px;
         font-size: 30px;
-        margin: 0 10px; /* スロットの間隔を狭くする */
+        margin: 0 10px;
     }
 
     button, input {
         font-size: 18px;
         padding: 8px 16px;
-        margin: 5px; /* スマホではマージンをさらに小さく */
+        margin: 5px;
     }
 
     .slot-machine {
-        margin-top: 20px; /* スロットマシンの上のマージンを小さく */
+        margin-top: 20px;
     }
 
     .controls {
-        margin-top: 20px; /* コントロールの上のマージンを小さく */
+        margin-top: 20px;
     }
 
     .status {
-        font-size: 16px; /* ステータスのフォントサイズを小さく */
+        font-size: 16px;
     }
+}
+
+@keyframes win {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+@keyframes lose {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(-10px); }
+}
+
+.win-animation {
+    animation: win 0.5s ease-in-out;
+}
+
+.lose-animation {
+    animation: lose 0.3s ease-in-out;
 }
