@@ -27,7 +27,12 @@ const payoutMultipliers = {
     'BBB': 3,
     'CCC': 2,
     'DDD': 1,
-    'ABC': 5
+    'ABC': 5,
+    'ACB': 3,
+    'BAC': 3,
+    'BCA': 3,
+    'CAB': 3,
+    'CBA': 3
 };
 
 // 最高記録をローカルストレージから取得
@@ -36,7 +41,7 @@ document.getElementById('highest-money').textContent = highestMoney;
 
 function resetReels() {
     for (let i = 0; i < reels.length; i++) {
-        reels[i].textContent = symbols[0];
+        reels[i].innerHTML = `<span>${symbols[0]}</span>`;
         reels[i].style.animation = 'none';
     }
 }
@@ -44,7 +49,7 @@ function resetReels() {
 function startReel(reelIndex) {
     intervals[reelIndex] = setInterval(() => {
         const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
-        reels[reelIndex].textContent = randomSymbol;
+        reels[reelIndex].innerHTML = `<span>${randomSymbol}</span>`;
     }, 250);  // リールの回転速度を遅く
 }
 
@@ -57,7 +62,6 @@ function stopReel(reelIndex) {
 
 function startAllReels() {
     for (let i = 0; i < reels.length; i++) {
-        reels[i].style.animation = 'spin 1.5s linear infinite';
         startReel(i);
     }
 }
@@ -72,20 +76,22 @@ function checkAllReelsStopped() {
 }
 
 function checkWin() {
-    const result = reels.map(reel => reel.textContent);
+    const result = reels.map(reel => reel.textContent).join('');
     let winnings = 0;
 
     // 勝利条件をチェック
-    if (result[0] === 'A' && result[1] === 'A' && result[2] === 'A') {
+    if (result === 'AAA') {
         winnings = currentBet * payoutMultipliers['AAA'];
-    } else if (result[0] === 'B' && result[1] === 'B' && result[2] === 'B') {
+    } else if (result === 'BBB') {
         winnings = currentBet * payoutMultipliers['BBB'];
-    } else if (result[0] === 'C' && result[1] === 'C' && result[2] === 'C') {
+    } else if (result === 'CCC') {
         winnings = currentBet * payoutMultipliers['CCC'];
-    } else if (result[0] === 'D' && result[1] === 'D' && result[2] === 'D') {
+    } else if (result === 'DDD') {
         winnings = currentBet * payoutMultipliers['DDD'];
-    } else if (result[0] === 'A' && result[1] === 'B' && result[2] === 'C') {
+    } else if (result === 'ABC') {
         winnings = currentBet * payoutMultipliers['ABC'];
+    } else if (['ACB', 'BAC', 'BCA', 'CAB', 'CBA'].includes(result)) {
+        winnings = currentBet * payoutMultipliers[result];
     }
 
     if (winnings > 0) {
