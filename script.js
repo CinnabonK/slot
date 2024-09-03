@@ -23,16 +23,16 @@ let money = 10000;
 let currentBet = 0;
 
 const payoutMultipliers = {
-    'AAA': 40,
-    'BBB': 30,
-    'CCC': 20,
-    'DDD': 10,
-    'ABC': 500
+    'AAA': 4,
+    'BBB': 3,
+    'CCC': 2,
+    'DDD': 1,
+    'ABC': 5
 };
 
 // 最高記録をローカルストレージから取得
 let highestMoney = localStorage.getItem('highestMoney') || 0;
-document.querySelector('.status').insertAdjacentHTML('beforeend', `<p>最高記録: <span id="highest-money">${highestMoney}</span></p>`);
+document.getElementById('highest-money').textContent = highestMoney;
 
 function resetReels() {
     for (let i = 0; i < reels.length; i++) {
@@ -75,6 +75,7 @@ function checkWin() {
     const result = reels.map(reel => reel.textContent);
     let winnings = 0;
 
+    // 勝利条件をチェック
     if (result[0] === 'A' && result[1] === 'A' && result[2] === 'A') {
         winnings = currentBet * payoutMultipliers['AAA'];
     } else if (result[0] === 'B' && result[1] === 'B' && result[2] === 'B') {
@@ -83,7 +84,7 @@ function checkWin() {
         winnings = currentBet * payoutMultipliers['CCC'];
     } else if (result[0] === 'D' && result[1] === 'D' && result[2] === 'D') {
         winnings = currentBet * payoutMultipliers['DDD'];
-    } else if (result.includes('A') && result.includes('B') && result.includes('C')) {
+    } else if (result[0] === 'A' && result[1] === 'B' && result[2] === 'C') {
         winnings = currentBet * payoutMultipliers['ABC'];
     }
 
