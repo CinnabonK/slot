@@ -27,7 +27,7 @@ const payoutMultipliers = {
     'BBB': 30,
     'CCC': 20,
     'DDD': 10,
-    'ABC': 50
+    'ABC': 500
 };
 
 // 最高記録をローカルストレージから取得
