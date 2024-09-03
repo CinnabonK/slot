@@ -42,12 +42,13 @@ document.getElementById('highest-money').textContent = highestMoney;
 function resetReels() {
     for (let i = 0; i < reels.length; i++) {
         reels[i].innerHTML = `<span>${symbols[0]}</span>`;
-        reels[i].classList.remove('spin', 'stopping', 'win-animation', 'lose-animation');
+        reels[i].style.animation = 'none';
+        reels[i].classList.remove('stopping', 'win-animation', 'lose-animation', 'spin');
     }
 }
 
 function startReel(reelIndex) {
-    reels[reelIndex].classList.add('spin'); // 回転中のアニメーションを無効化
+    reels[reelIndex].classList.add('spin'); // 回転アニメーションを追加
     intervals[reelIndex] = setInterval(() => {
         const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
         reels[reelIndex].innerHTML = `<span>${randomSymbol}</span>`;
@@ -57,8 +58,8 @@ function startReel(reelIndex) {
 function stopReel(reelIndex) {
     clearInterval(intervals[reelIndex]);
     intervals[reelIndex] = null;
-    reels[reelIndex].classList.remove('spin'); // 回転停止時にアニメーションを有効化
-    reels[reelIndex].classList.add('stopping');
+    reels[reelIndex].classList.remove('spin'); // 回転アニメーションを削除
+    reels[reelIndex].classList.add('stopping'); // 停止アニメーションを追加
     checkAllReelsStopped();
 }
 
@@ -95,7 +96,7 @@ function checkWin() {
 
     money += winnings;
     moneyDisplay.textContent = money;
-    betInput.max = money;  // ベット額の上限を所持金に設定
+    betInput.max = money;
 
     if (money > highestMoney) {
         highestMoney = money;
@@ -142,7 +143,7 @@ function handleStart() {
 resetReels();
 enableStopButtons(false);
 rerollButton.disabled = true;
-betInput.max = money;  // ベット額の上限を所持金に設定
+betInput.max = money;
 
 startButton.addEventListener('click', handleStart);
 
