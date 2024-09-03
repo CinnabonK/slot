@@ -50,17 +50,26 @@ body {
     transition: transform 0.5s ease-in-out;
 }
 
-.reel.stopping span {
-    animation: spin 1.5s linear infinite;
+.reel.stopping {
+    animation: stop-spin 0.5s ease-out;
+}
+
+.reel span {
+    position: absolute;
 }
 
 .reel.spin span {
-    animation: none; /* 回転中はアニメーションを無効化 */
+    animation: spin 1.5s linear infinite;
 }
 
 @keyframes spin {
     0% { opacity: 0; }
     100% { opacity: 1; }
+}
+
+@keyframes stop-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .controls {
