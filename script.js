@@ -75,6 +75,7 @@ function checkAllReelsStopped() {
         checkWin();
         startButton.disabled = false;
         rerollButton.disabled = false;
+        betInput.disabled = false; // ベット額の変更を再び許可
     }
 }
 
@@ -83,6 +84,7 @@ function checkWin() {
     let winnings = 0;
 
     if (payoutMultipliers[result]) {
+        // ベット額に対して正しい倍率を掛けて獲得コインを計算
         winnings = currentBet * payoutMultipliers[result];
     }
 
@@ -94,10 +96,12 @@ function checkWin() {
         reels.forEach(reel => reel.classList.add('lose-animation')); // 敗北アニメーション
     }
 
+    // 獲得したコインを所持金に追加
     money += winnings;
     moneyDisplay.textContent = money;
     betInput.max = money;
 
+    // 最高記録を更新
     if (money > highestMoney) {
         highestMoney = money;
         localStorage.setItem('highestMoney', highestMoney);
@@ -113,6 +117,12 @@ function handleReroll() {
         startAllReels();
         enableStopButtons(true);
         rerollButton.disabled = true;
+        
+        // リトライ時にベット額の変更を禁止
+        betInput.disabled = true;
+        
+        // リトライ時にベット上限を更新
+        betInput.max = money;
     } else {
         messageDisplay.textContent = "お金が足りません。";
     }
@@ -132,6 +142,9 @@ function handleStart() {
         enableStopButtons(true);
         startButton.disabled = true;
         rerollButton.disabled = true;
+        
+        // ベット額の変更を禁止
+        betInput.disabled = true;
 
         controlsContainer.classList.add('hidden-start');
     } else {
