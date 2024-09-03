@@ -42,21 +42,23 @@ document.getElementById('highest-money').textContent = highestMoney;
 function resetReels() {
     for (let i = 0; i < reels.length; i++) {
         reels[i].innerHTML = `<span>${symbols[0]}</span>`;
-        reels[i].style.animation = 'none';
+        reels[i].classList.remove('spin', 'stopping', 'win-animation', 'lose-animation');
     }
 }
 
 function startReel(reelIndex) {
+    reels[reelIndex].classList.add('spin'); // 回転中のアニメーションを無効化
     intervals[reelIndex] = setInterval(() => {
         const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
         reels[reelIndex].innerHTML = `<span>${randomSymbol}</span>`;
-    }, 250);  // リールの回転速度を遅く
+    }, 250);
 }
 
 function stopReel(reelIndex) {
     clearInterval(intervals[reelIndex]);
     intervals[reelIndex] = null;
-    reels[reelIndex].style.animation = 'none';
+    reels[reelIndex].classList.remove('spin'); // 回転停止時にアニメーションを有効化
+    reels[reelIndex].classList.add('stopping');
     checkAllReelsStopped();
 }
 
@@ -79,22 +81,22 @@ function checkWin() {
     const result = reels.map(reel => reel.textContent).join('');
     let winnings = 0;
 
-    // 勝利条件をチェック
     if (payoutMultipliers[result]) {
         winnings = currentBet * payoutMultipliers[result];
     }
 
     if (winnings > 0) {
         messageDisplay.textContent = `おめでとう！ あなたは ${winnings} コインを獲得しました！`;
+        reels.forEach(reel => reel.classList.add('win-animation')); // 勝利アニメーション
     } else {
         messageDisplay.textContent = "残念、もう一度挑戦しましょう。";
+        reels.forEach(reel => reel.classList.add('lose-animation')); // 敗北アニメーション
     }
 
     money += winnings;
     moneyDisplay.textContent = money;
-    betInput.max = money;
+    betInput.max = money;  // ベット額の上限を所持金に設定
 
-    // 最高記録を更新
     if (money > highestMoney) {
         highestMoney = money;
         localStorage.setItem('highestMoney', highestMoney);
@@ -140,11 +142,10 @@ function handleStart() {
 resetReels();
 enableStopButtons(false);
 rerollButton.disabled = true;
-betInput.max = money;  // 所持金全額をベット額の上限に設定
+betInput.max = money;  // ベット額の上限を所持金に設定
 
 startButton.addEventListener('click', handleStart);
 
-// ストップボタンの設定
 for (let i = 0; i < reels.length; i++) {
     stopButtons[i].addEventListener('click', () => {
         stopReel(i);
@@ -153,7 +154,6 @@ for (let i = 0; i < reels.length; i++) {
 
 rerollButton.addEventListener('click', handleReroll);
 
-// ベット額変更時に所持金を反映
 betInput.addEventListener('input', () => {
     if (parseInt(betInput.value) > money) {
         betInput.value = money;
