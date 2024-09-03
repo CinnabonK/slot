@@ -42,7 +42,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    animation: spin 1.5s linear infinite; /* 回転速度を遅く */
+    animation: spin 0.5s linear infinite; /* 回転速度を遅く */
 }
 
 @keyframes spin {
