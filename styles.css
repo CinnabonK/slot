@@ -1,13 +1,15 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    margin: 20;
+    margin: 20px; /* 修正: marginを20に変更 */
     padding: 0;
 }
 
 .payout-table {
     margin: 50px auto;
-    width: 80%; /* テーブルの幅を広く設定 */
+    width: 100%; /* 修正: テーブルを画面幅に合わせる */
+    max-width: 600px; /* テーブルの最大幅を設定 */
+    box-sizing: border-box; /* パディングとボーダーを含めてサイズを計算 */
 }
 
 .payout-table table {
@@ -31,6 +33,7 @@ body {
     display: flex;
     justify-content: center;
     margin-top: 50px;
+    flex-wrap: wrap; /* 修正: スロットのリールが画面に収まるように折り返しを許可 */
 }
 
 .reel {
@@ -42,18 +45,13 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; /* 枠を固定 */
+    overflow: hidden;
     position: relative;
 }
 
 .reel span {
     position: absolute;
-    animation: spin 1.5s linear infinite; /* 文字が変わるアニメーション */
-}
-
-@keyframes spin {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+    animation: spin 1.5s linear infinite;
 }
 
 .controls {
@@ -61,6 +59,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap; /* 修正: コントロールが画面に収まるように折り返しを許可 */
 }
 
 .controls.hidden-start #start {
@@ -73,7 +72,7 @@ body {
 
 button, input {
     font-size: 20px;
-    margin: 0 15px;
+    margin: 10px; /* 修正: マージンを小さくし、スマホでの表示を最適化 */
     padding: 10px 20px;
     cursor: pointer;
 }
@@ -85,4 +84,37 @@ input {
 .status {
     margin-top: 20px;
     font-size: 18px;
+}
+
+/* スマホ向けのメディアクエリ */
+@media (max-width: 600px) {
+    .payout-table th, .payout-table td {
+        font-size: 16px; /* スマホではフォントサイズを小さく */
+        padding: 8px; /* パディングを小さく */
+    }
+
+    .reel {
+        width: 60px;
+        height: 60px;
+        font-size: 30px;
+        margin: 0 10px; /* スロットの間隔を狭くする */
+    }
+
+    button, input {
+        font-size: 18px;
+        padding: 8px 16px;
+        margin: 5px; /* スマホではマージンをさらに小さく */
+    }
+
+    .slot-machine {
+        margin-top: 20px; /* スロットマシンの上のマージンを小さく */
+    }
+
+    .controls {
+        margin-top: 20px; /* コントロールの上のマージンを小さく */
+    }
+
+    .status {
+        font-size: 16px; /* ステータスのフォントサイズを小さく */
+    }
 }
