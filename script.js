@@ -80,17 +80,7 @@ function checkWin() {
     let winnings = 0;
 
     // 勝利条件をチェック
-    if (result === 'AAA') {
-        winnings = currentBet * payoutMultipliers['AAA'];
-    } else if (result === 'BBB') {
-        winnings = currentBet * payoutMultipliers['BBB'];
-    } else if (result === 'CCC') {
-        winnings = currentBet * payoutMultipliers['CCC'];
-    } else if (result === 'DDD') {
-        winnings = currentBet * payoutMultipliers['DDD'];
-    } else if (result === 'ABC') {
-        winnings = currentBet * payoutMultipliers['ABC'];
-    } else if (['ACB', 'BAC', 'BCA', 'CAB', 'CBA'].includes(result)) {
+    if (payoutMultipliers[result]) {
         winnings = currentBet * payoutMultipliers[result];
     }
 
@@ -146,13 +136,15 @@ function handleStart() {
     }
 }
 
+// 初期設定
 resetReels();
 enableStopButtons(false);
 rerollButton.disabled = true;
-betInput.max = money;
+betInput.max = money;  // 所持金全額をベット額の上限に設定
 
 startButton.addEventListener('click', handleStart);
 
+// ストップボタンの設定
 for (let i = 0; i < reels.length; i++) {
     stopButtons[i].addEventListener('click', () => {
         stopReel(i);
@@ -160,3 +152,10 @@ for (let i = 0; i < reels.length; i++) {
 }
 
 rerollButton.addEventListener('click', handleReroll);
+
+// ベット額変更時に所持金を反映
+betInput.addEventListener('input', () => {
+    if (parseInt(betInput.value) > money) {
+        betInput.value = money;
+    }
+});
