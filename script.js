@@ -84,7 +84,6 @@ function checkWin() {
     let winnings = 0;
 
     if (payoutMultipliers[result]) {
-        // ベット額に対して正しい倍率を掛けて獲得コインを計算
         winnings = currentBet * payoutMultipliers[result];
     }
 
@@ -110,6 +109,7 @@ function checkWin() {
 }
 
 function handleReroll() {
+    // 現在のベット額でリトライが可能か確認
     if (money >= currentBet) {
         money -= currentBet;
         moneyDisplay.textContent = money;
@@ -133,7 +133,10 @@ function enableStopButtons(enabled) {
 }
 
 function handleStart() {
+    // 現在のベット額を取得
     currentBet = parseInt(betInput.value);
+    
+    // ベット額が所持金を超えていないか確認
     if (money >= currentBet) {
         money -= currentBet;
         moneyDisplay.textContent = money;
